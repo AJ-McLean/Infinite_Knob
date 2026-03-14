@@ -1,20 +1,14 @@
-export type ParameterName =
-  | 'lpf'
-  | 'gain'
-  | 'room'
-  | 'detune'
-  | 'distortion'
-  | 'lfo_rate'
-  | 'lfo_depth'
+export type CapabilityParam = 'lpf' | 'lpq' | 'gain' | 'shape' | 'delay' | 'room' | 'fm' | 'lfo'
 
-export interface ParameterMapping {
-  parameter: ParameterName
-  startValue: number
-  endValue: number
+export interface ParamMapping {
+  param: CapabilityParam
+  from: number
+  to: number
 }
 
 export interface SemanticMapping {
-  concept: string
-  description: string
-  soundMappings: ParameterMapping[]
+  term: string
+  confidence: number
+  description?: string
+  mappings: ParamMapping[]
 }

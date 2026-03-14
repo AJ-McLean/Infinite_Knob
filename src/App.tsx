@@ -1,13 +1,12 @@
 import { useCallback, useRef, useState } from 'react'
-import { AudioEngine } from './audio/AudioEngine'
-import { applyMapping } from './audio/MappingEngine'
+import { StrudelEngine } from './audio/StrudelEngine'
 import { interpret, fallbackMapping } from './ai/SemanticInterpreter'
 import type { SemanticMapping } from './ai/types'
 import { Slider } from './components/ui/slider'
 import { AIInputWithLoading } from './components/ui/ai-input-with-loading'
 
 export default function App() {
-  const engineRef = useRef<AudioEngine | null>(null)
+  const engineRef = useRef<StrudelEngine | null>(null)
   const initializedRef = useRef(false)
   const [sliderValue, setSliderValue] = useState([0])
   const [mapping, setMapping] = useState<SemanticMapping | null>(null)
@@ -15,9 +14,8 @@ export default function App() {
   const ensureAudio = async () => {
     if (initializedRef.current) return
     initializedRef.current = true
-    const engine = new AudioEngine()
+    const engine = new StrudelEngine()
     await engine.init()
-    engine.start()
     engineRef.current = engine
   }
 
@@ -25,11 +23,10 @@ export default function App() {
     async (values: number[]) => {
       await ensureAudio()
       setSliderValue(values)
-      if (engineRef.current && mapping) {
-        applyMapping(engineRef.current, mapping, values[0] / 100)
-      }
+      engineRef.current?.setKnob(values[0] / 100)
     },
-    [mapping]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
   )
 
   const handleSubmit = async (text: string) => {
@@ -37,9 +34,7 @@ export default function App() {
     const result = await interpret(text).catch(() => fallbackMapping(text))
     setMapping(result)
     setSliderValue([0])
-    if (engineRef.current) {
-      applyMapping(engineRef.current, result, 0)
-    }
+    await engineRef.current?.loadMapping(result)
   }
 
   return (
