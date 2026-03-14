@@ -1,0 +1,336 @@
+1. Core Concept: The Knob as “Intensity Over a Semantic Stack”
+
+Think of the system as three layers:
+
+TEXT INPUT  →  SEMANTIC LAYERS  →  KNOB INTENSITY
+
+Text input
+
+Creates or modifies layers of transformation.
+
+Semantic layers
+
+Each text prompt becomes a layer that modifies the sound.
+
+Knob
+
+Controls how far along the combined transformation stack you travel.
+
+So the knob is basically:
+
+Output = BaseSound + Σ (Layer_i × KnobPosition)
+
+
+But with smarter rules.
+
+2. The Semantic Layer Object
+
+Every text input becomes a layer object.
+
+Example:
+
+Layer {
+    token: "sadness"
+    vector: embedding representation
+    transform: sound modification model
+    weight: 0.6
+    polarity: +1 or -1
+}
+
+
+The transform might affect:
+
+harmonic spectrum
+
+transient shaping
+
+rhythm
+
+modulation
+
+noise content
+
+envelope
+
+spatialization
+
+For example:
+
+token	transform tendency
+sadness	darker spectrum, slower attack
+sprinkles	granular high-frequency bursts
+kick drum	transient + sub emphasis
+
+The key: tokens are modifiers, not replacements.
+
+3. Additive → Subtractive Logic
+
+You proposed a clever rule:
+
+typing the same thing again reduces it.
+
+We can formalize this as toggle polarity accumulation.
+
+Rule
+
+Each repeated token flips direction.
+
+Example:
+
+Input sequence:
+
+sadness
+sprinkles
+sadness
+
+
+Becomes:
+
+sadness +1
+sprinkles +1
+sadness -1
+
+
+Net result:
+
+sprinkles +1
+
+
+Alternatively:
+
+Accumulating strength model
+
+Each repeat moves weight along a curve.
+
+1st entry = +0.5
+2nd entry = +1.0
+3rd entry = +0.5
+4th entry = 0
+5th entry = -0.5
+
+
+So the system cycles:
+
+add → amplify → reduce → remove → invert
+
+
+This works beautifully with a single control UI.
+
+4. Layer Ordering Problem
+
+You correctly predicted chaos. Order matters.
+
+Solution: semantic grouping.
+
+Each token is classified into a category:
+
+STRUCTURE
+TIMBRE
+TEXTURE
+MOTION
+EMOTION
+SPACE
+
+
+Processing order is fixed:
+
+1 Structure
+2 Timbre
+3 Texture
+4 Motion
+5 Emotion
+6 Space
+
+
+Example:
+
+kick drum → STRUCTURE
+sadness → EMOTION
+sprinkles → TEXTURE
+
+
+Pipeline:
+
+input sound
+→ structure transform
+→ timbre transform
+→ texture transform
+→ motion transform
+→ emotion transform
+→ spatial transform
+
+
+This prevents chaotic conflicts.
+
+5. What the Knob Actually Does
+
+The knob represents distance along the transformation manifold.
+
+Mathematically:
+
+Output = Base + (Σ LayerTransforms) * Knob
+
+
+But more interesting:
+
+Output = Morph(Base, TargetSemanticState, Knob)
+
+
+Where the TargetSemanticState is built from the tokens.
+
+Knob = interpolation.
+
+0 → original sound
+1 → fully transformed sound
+
+6. Conflict Resolution
+
+Some tokens contradict each other.
+
+Example:
+
+dark
+bright
+
+
+Solution: vector blending.
+
+Each token becomes a vector in a semantic space.
+
+FinalState = average(all token vectors × weights)
+
+
+This allows:
+
+dark + bright
+
+
+to produce balanced tone instead of chaos.
+
+7. Preserving Original Character
+
+This is extremely important for your concept.
+
+Rule:
+
+The base sound is never replaced.
+
+Instead transformations operate as:
+
+spectral tilt
+transient emphasis
+modulation overlays
+granular additions
+resonance shaping
+
+
+Think:
+
+kick drum flavour
+not
+replace with kick drum
+
+8. Example Walkthrough
+
+Input sound: piano note
+
+User types:
+
+sadness
+sprinkles
+kick drum
+
+
+Internal state:
+
+Layer1: sadness (emotion)
+Layer2: sprinkles (texture)
+Layer3: kick drum (structure)
+
+
+Processing:
+
+structure → kick-like transient shaping
+timbre → unchanged
+texture → granular sparkle
+emotion → darker tone
+
+
+Knob movement:
+
+0.0  original piano
+0.3  darker piano with light sparkle
+0.6  stronger sparkle + punchier transient
+1.0  punchy dark sparkling piano
+
+9. Optional (But Very Powerful): Prompt History as a Stack
+
+Instead of a single field, treat input as history.
+
+Example:
+
+> sadness
+> sprinkles
+> kick drum
+
+
+But visually you still show one text box.
+
+Internally it becomes a stack.
+
+10. The Hidden Model
+
+Under the hood you’d want something like:
+
+Audio → Embedding → Semantic Transform Engine → Audio
+
+
+Possible engines:
+
+CLAP embeddings
+
+latent diffusion audio
+
+neural audio effects
+
+spectral transformation networks
+
+But conceptually you just need:
+
+text → parameter field
+
+11. The Philosophy
+
+Your design is basically:
+
+A semantic macro knob.
+
+Instead of adjusting:
+
+attack
+decay
+saturation
+granular density
+filter tilt
+
+
+You adjust meaning.
+
+12. A Name for the System
+
+You might think of the architecture as:
+
+Semantic Layered Audio Morphing
+
+
+or
+
+SALM Engine
+
+13. One Small Trick That Will Make This Feel Magical
+
+Let the knob bias toward the most recent token.
+
+So the last typed word has slightly stronger influence.
+
+This makes the instrument feel intentional instead of random.

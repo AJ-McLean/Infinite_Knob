@@ -1,19 +1,19 @@
 import { useCallback, useRef, useState } from 'react'
-import { StrudelEngine } from './audio/StrudelEngine'
+import { AudioEngine } from './audio/AudioEngine'
 import { interpret, fallbackMapping } from './ai/SemanticInterpreter'
 import { Slider } from './components/ui/slider'
 import { AIInputWithLoading } from './components/ui/ai-input-with-loading'
 import { HandKnobController } from './components/HandKnobController'
 
 export default function App() {
-  const engineRef = useRef<StrudelEngine | null>(null)
+  const engineRef = useRef<AudioEngine | null>(null)
   const initializedRef = useRef(false)
   const [sliderValue, setSliderValue] = useState([0])
 
   const ensureAudio = async () => {
     if (initializedRef.current) return
     initializedRef.current = true
-    const engine = new StrudelEngine()
+    const engine = new AudioEngine()
     await engine.init()
     engineRef.current = engine
   }
