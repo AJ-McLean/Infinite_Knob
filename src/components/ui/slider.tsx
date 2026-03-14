@@ -13,8 +13,9 @@ const Slider = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof SliderPrimitive.Root> & {
     showTooltip?: boolean
     tooltipContent?: (value: number) => React.ReactNode
+    centered?: boolean
   }
->(({ className, showTooltip = false, tooltipContent, ...props }, ref) => {
+>(({ className, showTooltip = false, tooltipContent, centered = false, ...props }, ref) => {
   const [showTooltipState, setShowTooltipState] = React.useState(false)
   const [internalValue, setInternalValue] = React.useState<number[]>(
     (props.defaultValue as number[]) ?? (props.value as number[]) ?? [0]
