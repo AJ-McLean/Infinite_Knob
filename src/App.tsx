@@ -4,6 +4,7 @@ import { interpret, fallbackMapping } from './ai/SemanticInterpreter'
 import { Slider } from './components/ui/slider'
 import { AIInputWithLoading } from './components/ui/ai-input-with-loading'
 import { HandKnobController } from './components/HandKnobController'
+import { GyroKnobController } from './components/GyroKnobController'
 
 export default function App() {
   const engineRef = useRef<AudioEngine | null>(null)
@@ -45,13 +46,20 @@ export default function App() {
     <div className="min-h-screen bg-white flex flex-col items-center justify-center gap-10 px-10">
       <h1 className="text-5xl font-light tracking-tight text-black select-none">infinite knob</h1>
       <div className="w-full max-w-sm">
-        <Slider
-          value={sliderValue}
-          onValueChange={handleSliderChange}
+        <GyroKnobController
+          value={sliderValue[0] ?? 0}
           min={0}
           max={100}
-          step={0.5}
-        />
+          onChange={(v) => handleSliderChange([v])}
+        >
+          <Slider
+            value={sliderValue}
+            onValueChange={handleSliderChange}
+            min={0}
+            max={100}
+            step={0.5}
+          />
+        </GyroKnobController>
       </div>
       <div className="w-full max-w-sm">
         <AIInputWithLoading onSubmit={handleSubmit} placeholder="describe the sound" />
