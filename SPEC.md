@@ -145,7 +145,7 @@ flowchart LR
         Cat["classify category"]
         Dims["identify hidden dimensions\nbrightness · distance\ninstability · roughness\nmotion · weight · strain"]
         Traj["design trajectory\nintroductions + suppressions\n2–3 stages with curves"]
-        GPT["gpt-4o-mini\nJSON output"]
+        GPT["gpt-5-nano\nJSON output"]
         FB["deterministic fallback\n5 presets by hash"]
     end
 
@@ -349,7 +349,7 @@ Pure white. Minimal. Nothing visible except three elements:
 | Styling | Tailwind CSS v3 + CSS variables |
 | UI primitives | Radix UI (Slider, Tooltip) |
 | Audio | Web Audio API (no samples, no Strudel runtime) |
-| AI | OpenAI gpt-4o-mini, `response_format: json_object`, temp 0.8 |
+| AI | OpenAI gpt-5-nano, `response_format: json_object`, temp 0.8 |
 | Backend | Express + better-sqlite3 |
 | Dev runner | tsx + concurrently |
 | Path alias | `@/` → `./src/` |

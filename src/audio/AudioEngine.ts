@@ -208,6 +208,7 @@ export class AudioEngine {
   private baseParams: Record<string, number> = { ...DEFAULT_PARAMS }
   private layers: Layer[] = []
   private lastMapping: SemanticMapping | null = null
+  private arpInterval: ReturnType<typeof setInterval> | null = null
 
   async init(): Promise<void> {
     const ctx = new AudioContext()
@@ -413,6 +414,41 @@ export class AudioEngine {
   setKnob(value: number): void {
     this.knobValue = value
     this.applyEffectiveParams()
+  }
+
+  /**
+   * Arpeggiate through a set of frequencies (root, third, fifth).
+   * Steps every stepMs milliseconds, loops indefinitely until the next call.
+   */
+  startChordArp(notes: number[], stepMs = 400): void {
+    if (!this.ctx) return
+    if (this.arpInterval !== null) {
+      clearInterval(this.arpInterval)
+      this.arpInterval = null
+    }
+    let step = 0
+    const tick = () => {
+      if (!this.ctx) return
+      const freq = notes[step % notes.length]
+      const now = this.ctx.currentTime
+      const τ = 0.02
+      this.oscA.frequency.setTargetAtTime(freq, now, τ)
+      this.oscB.frequency.setTargetAtTime(freq * Math.pow(2, 4 / 12), now, τ)
+      this.oscB.detune.setTargetAtTime(0, now, τ)
+      this.oscBGain.gain.setTargetAtTime(0.5, now, τ)
+      this.subOsc.frequency.setTargetAtTime(freq / 2, now, τ)
+      this.fmOsc.frequency.setTargetAtTime(freq, now, τ)
+      step++
+    }
+    tick()
+    this.arpInterval = setInterval(tick, stepMs)
+  }
+
+  stopChordArp(): void {
+    if (this.arpInterval !== null) {
+      clearInterval(this.arpInterval)
+      this.arpInterval = null
+    }
   }
 
   // ---------------------------------------------------------------------------

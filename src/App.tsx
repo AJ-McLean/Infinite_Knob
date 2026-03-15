@@ -19,12 +19,41 @@ export default function App() {
     engineRef.current = engine
   }
 
+  // 12 major chord roots: 1=C … 0=A, -=Bb, ==B
+  const CHORD_ROOTS: Record<string, number> = {
+    '1': 261.63, '2': 277.18, '3': 293.66, '4': 311.13,
+    '5': 329.63, '6': 349.23, '7': 369.99, '8': 392.00,
+    '9': 415.30, '0': 440.00, '-': 466.16, '=': 493.88,
+  }
+
+  const activeChordKeyRef = useRef<string | null>(null)
+
   useEffect(() => {
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Shift' && !e.repeat) setCameraActive((v) => !v)
+    const onKeyDown = async (e: KeyboardEvent) => {
+      if (e.repeat || e.metaKey || e.ctrlKey || e.altKey) return
+      if (e.key === 'Shift') { setCameraActive((v) => !v); return }
+      const root = CHORD_ROOTS[e.key]
+      if (root) {
+        const tag = (e.target as HTMLElement)?.tagName
+        if (tag === 'INPUT' || tag === 'TEXTAREA') return
+        await ensureAudio()
+        if (activeChordKeyRef.current === e.key) {
+          engineRef.current?.stopChordArp()
+          activeChordKeyRef.current = null
+        } else {
+          const third = root * Math.pow(2, 4 / 12)
+          const fifth = root * Math.pow(2, 7 / 12)
+          engineRef.current?.startChordArp([root, third, fifth])
+          activeChordKeyRef.current = e.key
+        }
+      }
     }
     window.addEventListener('keydown', onKeyDown)
-    return () => window.removeEventListener('keydown', onKeyDown)
+    return () => {
+      window.removeEventListener('keydown', onKeyDown)
+      engineRef.current?.stopChordArp()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const handleSliderChange = useCallback(async (values: number[]) => {

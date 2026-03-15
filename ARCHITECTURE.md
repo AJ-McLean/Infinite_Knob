@@ -12,7 +12,7 @@ graph TD
     Input["AIInputWithLoading\ntext input"]
     Slider["Slider\nknob 0–100"]
     App["App.tsx\norchestrator"]
-    AI["SemanticInterpreter\ngpt-4o-mini"]
+    AI["SemanticInterpreter\ngpt-5-nano"]
     Engine["StrudelEngine\nWeb Audio"]
     Drums["DrumEngine\nsynth percussion"]
     Logger["UsageLogger"]
@@ -48,7 +48,7 @@ flowchart LR
         Norm["normalise +\nspelling correct"]
         Dims["hidden dimensions\nbrightness · distance\ninstability · blur\nroughness · motion\nweight · strain"]
         Traj["trajectory design\n2–3 staged segments\nwith curve types"]
-        GPT["gpt-4o-mini\nJSON output"]
+        GPT["gpt-5-nano\nJSON output"]
         FB["fallback\n5 deterministic presets"]
     end
 
